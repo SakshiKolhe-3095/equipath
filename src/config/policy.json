@@ -1,0 +1,11 @@
+{
+    "metadata": {
+        "project": "EquiPath-Fairness-Engine",
+        "policy_version": "1.0.0",
+        "target_disparate_impact_envelope": 0.8
+    },
+    "operational_thresholds": {
+        "Male": 0.6300000000000002,
+        "Female": 0.2
+    }
+}

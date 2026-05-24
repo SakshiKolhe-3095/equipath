@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@theme {
+  --color-slate-950: #030712;
+  --color-slate-900: #0f172a;
+  --color-slate-800: #1e293b;
+  --color-slate-700: #334155;
+  --color-slate-400: #94a3b8;
+  --color-slate-100: #f1f5f9;
+  
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-cyan-400: #22d3ee;
+}
+
+body {
+  background-color: #030712;
+  color: #f1f5f9;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  position: relative;
+}
+
+/* 🪐 5️⃣ FUTURISTIC ENTERPRISE TERMINAL GRID TEXTURE OVERLAY */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Custom Core System Animation Sequences */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.01); }
+}
+
+@keyframes signalFlow {
+  0% { left: -30%; opacity: 0; }
+  30% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulseGlow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.animate-signalFlow {
+  animation: signalFlow 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-spinSlow {
+  animation: spinSlow 8s linear infinite;
+}
+
+/* Custom Scrollbar Suppressor Utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* =====================================================================
+   🪐 STEP 4: ENTERPRISE INFRASTRUCTURE BACKGROUND GRID MODEL
+   ===================================================================== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+
+  background-size: 40px 40px;
+
+  pointer-events: none;
+  z-index: -1;
+}

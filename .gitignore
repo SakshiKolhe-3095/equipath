@@ -1,0 +1,28 @@
+# 📦 Dependency Directories
+frontend/node_modules/
+node_modules/
+jspm_packages/
+web_modules/
+
+# 🐍 Python Artifacts & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+ENV/
+env/
+
+# 🏗️ Build Outputs
+frontend/dist/
+dist/
+build/
+
+# 🕒 System Logs & Local Configurations
+*.log
+frontend/.env
+.env
+.vscode/
+.idea/
+.DS_Store
