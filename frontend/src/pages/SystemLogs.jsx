@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { TerminalSquare, Search } from "lucide-react";
-// 🟢 Link to central state registry
 import { useGovernance } from "../context/GovernanceContext.jsx";
 
 export default function SystemLogs() {
-  // 🟢 Destructure global log collections
   const { logs } = useGovernance();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -40,21 +38,32 @@ export default function SystemLogs() {
 
       {/* TERMINAL EMULATOR WORKSPACE */}
       <div className="bg-black/40 border border-white/5 rounded-2xl p-6 font-mono text-xs shadow-2xl space-y-3 max-h-[500px] overflow-y-auto">
-        {filteredLogs.map((log, idx) => (
-          <div key={idx} className="flex flex-col md:flex-row items-start md:items-center gap-4 py-2 border-b border-white/[0.02] last:border-0 hover:bg-white/[0.01] px-2 rounded transition-all">
-            <span className="text-slate-600 shrink-0">{log.timestamp}</span>
-            <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider shrink-0 ${
-              log.type === "OVERRIDE" ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" :
-              log.type === "BIAS_AUDIT" ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" :
-              log.type === "DRIFT" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" :
-              "bg-slate-800 text-slate-400"
-            }`}>
-              {log.type}
-            </span>
-            <span className="text-slate-300 flex-1">{log.message}</span>
-            <span className="text-[10px] text-slate-600 font-bold">{log.id}</span>
-          </div>
-        ))}
+        {filteredLogs.length === 0 ? (
+          <p className="text-slate-600 italic font-mono text-center py-6">No telemetry signals found matching search parameters.</p>
+        ) : (
+          filteredLogs.map((log, idx) => {
+            // 🟢 DYNAMIC HIGHLIGHTING SCHEMAS: Optimizes recruiter conversion via visual hierarchy
+            let severityStyle = "bg-slate-800/40 text-slate-400 border-white/5";
+            if (log.type === "CRITICAL" || log.type === "SYSTEM_FAIL") {
+              severityStyle = "bg-rose-500/10 text-rose-400 border-rose-500/20";
+            } else if (log.type === "BIAS_AUDIT" || log.type === "OVERRIDE") {
+              severityStyle = "bg-purple-500/10 text-purple-400 border-purple-500/20";
+            } else if (log.type === "INFERENCE") {
+              severityStyle = "bg-cyan-500/10 text-cyan-400 border-cyan-500/20";
+            }
+
+            return (
+              <div key={idx} className="flex flex-col md:flex-row items-start md:items-center gap-4 py-2 border-b border-white/[0.02] last:border-0 hover:bg-white/[0.01] px-2 rounded transition-all">
+                <span className="text-slate-600 shrink-0">{log.timestamp}</span>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider shrink-0 border ${severityStyle}`}>
+                  {log.type}
+                </span>
+                <span className="text-slate-300 flex-1">{log.message}</span>
+                <span className="text-[10px] text-slate-600 font-bold">{log.id}</span>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

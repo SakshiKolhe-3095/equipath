@@ -1,21 +1,24 @@
 import React, { useState } from "react";
-import { ScrollText, ToggleLeft, ToggleRight, Sliders, ShieldCheck, HelpCircle, AlertCircle } from "lucide-react";
-// Import your global governance context hook
+import { ScrollText, ToggleLeft, ToggleRight, Sliders } from "lucide-react";
 import { useGovernance } from "../context/GovernanceContext.jsx";
 
 export default function PolicyStudio() {
-  // 🟢 CONNECT TO THE GLOBAL BRAIN INSTEAD OF LOCAL STATE
-  const { fairnessMode, setFairnessMode } = useGovernance();
-  
+  const { fairnessMode, setFairnessMode, addLogEntry } = useGovernance();
   const [fairnessThreshold, setFairnessThreshold] = useState(80);
   const [isInterceptActive, setIsInterceptActive] = useState(true);
 
   const policyModes = [
     { id: "raw", name: "Raw Unmitigated", desc: "No runtime interventions. Maximizes raw predictive accuracy while completely disregarding downstream demographic imbalances." },
     { id: "demographic_parity", name: "Demographic Parity", desc: "Forces equal selection rates across all protected groups. Aligns to legal 4/5ths rules." },
-    { id: "equalized_odds", name: name = "Equalized Odds", desc: "Balances both True Positive Rates and False Positive Rates across cohorts. Highly optimized for risk-balanced fairness architectures." },
-    { id: "hybrid", name: "Adaptive Hybrid OS", desc: "Dynamically weights DP and EO algorithms based on localized real-time data drift severity metrics." },
+    { id: "equalized_odds", name: "Equalized Odds", desc: "Balances both True Positive Rates and False Positive Rates across cohorts. Highly optimized for risk-balanced fairness architectures." },
   ];
+
+  const handleModeChange = (modeId, modeName) => {
+    setFairnessMode(modeId);
+    if (addLogEntry) {
+      addLogEntry("SYSTEM", ` Algorithmic policy regulation matrix modified to: ${modeName.toUpperCase()}`, "policy_studio_change");
+    }
+  };
 
   return (
     <div className="p-8 space-y-8 max-w-[1600px] mx-auto">
@@ -29,7 +32,6 @@ export default function PolicyStudio() {
           </div>
         </div>
 
-        {/* Dynamic global indicator badge */}
         <div className="flex items-center gap-2 bg-purple-500/5 border border-purple-500/20 px-4 py-2 rounded-xl text-xs font-mono text-purple-400">
           <span>Active Mode: {fairnessMode.toUpperCase()}</span>
         </div>
@@ -41,15 +43,13 @@ export default function PolicyStudio() {
           <Sliders className="w-4 h-4 text-purple-400" /> Mathematical Mitigation Engine
         </h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {policyModes.map((mode) => {
-            // 🟢 Check alignment using global state variables
             const isSelected = fairnessMode === mode.id;
             return (
               <button
                 key={mode.id}
-                // 🟢 Updates the global governance controller directly on click
-                onClick={() => setFairnessMode(mode.id)}
+                onClick={() => handleModeChange(mode.id, mode.name)}
                 className={`p-5 rounded-xl border text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
                   isSelected 
                     ? "bg-purple-500/10 border-purple-400/40 shadow-[0_0_20px_rgba(168,85,247,0.15)] text-white" 

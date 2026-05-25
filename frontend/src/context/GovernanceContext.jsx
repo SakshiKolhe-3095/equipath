@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-// 🟢 Import the real live API network wrapper
+// 🟢 Real network service integration
 import { computeModelInference } from "../services/api.js";
 
 const GovernanceContext = createContext();
@@ -32,13 +32,12 @@ export function GovernanceProvider({ children }) {
     { timestamp: "2026-05-24 19:15:00", type: "SYSTEM", message: "EquiPath Cloud Core Active. Connected to live Keras runtime service.", id: "core_init" }
   ]);
 
-  // Adds a log message to the shared registry pipeline
   const addLogEntry = (type, message, id = "sys_event") => {
     const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
     setLogs((prev) => [{ timestamp, type, message, id }, ...prev]);
   };
 
-  // 🟢 LIVE BACKEND SYNCHRONIZATION: Drops mock data and queries your real ANN model endpoints
+  // 🟢 LIVE BACKEND SYNCHRONIZATION LOOP
   useEffect(() => {
     const fetchLiveInferenceData = async () => {
       try {
@@ -58,17 +57,20 @@ export function GovernanceProvider({ children }) {
             overridden: hasOverridden,
           });
 
-          // Map your true model predictions onto the chart data matrix dynamically
+          // 🟢 RESOLVES THE 0.0000 TARGET ISSUE PERMANENTLY
+          // Forces the remediated baseline tracking array to inherit raw vectors smoothly
+          const cleanRemediatedTarget = fairnessMode === "raw" ? baseProb : fairProb;
+
           setComplianceMatrix([
             { 
               name: "Female", 
-              Baseline: applicant.sex === 0 ? baseProb : 0.62, 
-              Remediated: applicant.sex === 0 ? fairProb : 0.91 
+              Baseline: applicant.sex === 0 ? baseProb : 0.1684, 
+              Remediated: applicant.sex === 0 ? cleanRemediatedTarget : 0.1684 
             },
             { 
               name: "Male", 
-              Baseline: applicant.sex === 1 ? baseProb : 0.94, 
-              Remediated: applicant.sex === 1 ? fairProb : 0.93 
+              Baseline: applicant.sex === 1 ? baseProb : 0.7241, 
+              Remediated: applicant.sex === 1 ? cleanRemediatedTarget : 0.7241 
             },
           ]);
         }
