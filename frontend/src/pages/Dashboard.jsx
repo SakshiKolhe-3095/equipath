@@ -97,11 +97,20 @@ export default function Dashboard() {
               <h3 className="text-3xl font-black font-mono mt-1 text-slate-200">{(inference?.unmitigated_prob ?? 0).toFixed(4)}</h3>
               <p className="text-[10px] text-slate-400 mt-1">Status: <span className={inference?.raw_outcome === 'Approved' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>{inference?.raw_outcome}</span></p>
             </div>
+            
+            {/* REMEDIATED TARGET METRIC CARD */}
             <div className="bg-black/20 backdrop-blur-xl border border-white/5 p-5 rounded-xl shadow-lg">
               <span className="text-[9px] font-bold text-slate-500 tracking-widest uppercase block">Remediated Target</span>
-              <h3 className="text-3xl font-black font-mono mt-1 text-emerald-400">{inference?.fair_outcome === 'Approved' ? '1.0000' : '0.0000'}</h3>
+              <h3 className="text-3xl font-black font-mono mt-1 text-emerald-400">
+                {/* 🟢 FIXED: Renders live floating point metrics instead of standard string fallback logs */}
+                {(fairnessMode === 'raw' 
+                  ? (inference?.unmitigated_prob ?? 0) 
+                  : (inference?.fairness_adjusted_prob ?? 0)
+                ).toFixed(4)}
+              </h3>
               <p className="text-[10px] text-slate-400 mt-1">Decision: <span className={inference?.fair_outcome === 'Approved' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>{inference?.fair_outcome}</span></p>
             </div>
+
             <div className="bg-black/20 backdrop-blur-xl border border-white/5 p-4 rounded-xl flex items-center justify-around shadow-lg">
               <div className="w-14 h-14">
                 <CircularProgressbar value={complianceScore} text={`${complianceScore}%`} styles={buildStyles({ textColor: '#f1f5f9', pathColor: complianceScore > 80 ? '#10b981' : '#f43f5e', trailColor: '#0f172a', textSize: '26px' })} />

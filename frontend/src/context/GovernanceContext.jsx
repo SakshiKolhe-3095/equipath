@@ -20,6 +20,7 @@ export function GovernanceProvider({ children }) {
     raw_outcome: "Pending",
     fair_outcome: "Evaluating...",
     unmitigated_prob: 0.5,
+    fairness_adjusted_prob: 0.5, // 🟢 Tracks real fractional backend metric updates
     overridden: false,
   });
 
@@ -37,7 +38,7 @@ export function GovernanceProvider({ children }) {
     setLogs((prev) => [{ timestamp, type, message, id }, ...prev]);
   };
 
-  // 🟢 LIVE BACKEND SYNCHRONIZATION LOOP
+  // 🟢 LIVE BACKEND SYNCHRONIZATION LOOP WITH REAL-TIME REGISTRY LOGGING (TASK S2-03, S2-04, & S2-05)
   useEffect(() => {
     const fetchLiveInferenceData = async () => {
       try {
@@ -54,11 +55,27 @@ export function GovernanceProvider({ children }) {
             raw_outcome: rawDecision,
             fair_outcome: fairDecision,
             unmitigated_prob: baseProb,
+            fairness_adjusted_prob: fairProb, // 🟢 Extracted and bound to app state memory
             overridden: hasOverridden,
           });
 
+          // 🟢 AUTOMATED TELEMETRY LOG DISPATCHER (TASK S2-05)
+          const txnId = `tx_${Math.random().toString(36).substr(2, 5)}`;
+          if (hasOverridden) {
+            addLogEntry(
+              "BIAS_AUDIT", 
+              `Disparity intercepted for Cohort (${applicant.sex === 0 ? "Female" : "Male"}). Mitigated via ${fairnessMode.toUpperCase()}. Delta correction: ${(fairProb - baseProb).toFixed(4)}`, 
+              txnId
+            );
+          } else {
+            addLogEntry(
+              "INFERENCE", 
+              `Inference pipeline transaction resolved. Baseline Probability: ${baseProb.toFixed(4)} | Mode: ${fairnessMode.toUpperCase()}`, 
+              txnId
+            );
+          }
+
           // 🟢 RESOLVES THE 0.0000 TARGET ISSUE PERMANENTLY
-          // Forces the remediated baseline tracking array to inherit raw vectors smoothly
           const cleanRemediatedTarget = fairnessMode === "raw" ? baseProb : fairProb;
 
           setComplianceMatrix([
@@ -76,6 +93,7 @@ export function GovernanceProvider({ children }) {
         }
       } catch (err) {
         console.error("[EquiPath State Error] Network state cascade sync failed:", err);
+        addLogEntry("CRITICAL", "API Gateway communication path interrupted or frame payload malformed.", "sys_err_500");
       }
     };
 

@@ -5,10 +5,13 @@ import { checkBackendHealth } from "../services/api.js";
 
 export default function Topbar() {
   const { fairnessMode } = useGovernance();
+  
+  // 🟢 Integrated state mapping to Task S2-01 backend keys
   const [health, setHealth] = useState({
     status: "offline",
     model_loaded: false,
     policy_loaded: false,
+    version: "1.0.0"
   });
 
   // Background heartbeat effect to query the FastAPI infrastructure layer
@@ -39,10 +42,10 @@ export default function Topbar() {
       {/* CENTER */}
       <div className="hidden lg:flex items-center gap-3 font-mono">
         {/* Dynamic API Status Indicator */}
-        <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border ${
+        <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-300 ${
           health.status === "online" 
             ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
-            : "bg-rose-500/10 border-rose-500/20 text-rose-400"
+            : "bg-rose-500/10 border-rose-500/20 text-rose-400 animate-pulse"
         }`}>
           <Wifi className={`w-4 h-4 ${health.status === "online" ? "animate-pulse" : ""}`} />
           <span className="text-xs font-bold uppercase">
@@ -59,10 +62,14 @@ export default function Topbar() {
         </div>
 
         {/* Dynamic Neural Network Deployment Status */}
-        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20">
-          <Cpu className="w-4 h-4 text-purple-400" />
-          <span className="text-xs font-bold text-purple-400 uppercase">
-            ANN_CORE: {health.model_loaded ? "ACTIVE" : "UNLOADED"}
+        <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-300 ${
+          health.model_loaded
+            ? "bg-purple-500/10 border-purple-500/20 text-purple-400"
+            : "bg-amber-500/10 border-amber-500/20 text-amber-400"
+        }`}>
+          <Cpu className="w-4 h-4" />
+          <span className="text-xs font-bold uppercase">
+            {health.model_loaded ? `MODEL v${health.version || "1.0.0"}` : "CORE UNLOADED"}
           </span>
         </div>
       </div>
@@ -71,7 +78,9 @@ export default function Topbar() {
       <div className="flex items-center gap-4">
         <button className="relative p-2 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all">
           <Bell className="w-4 h-4 text-slate-300" />
-          <span className={`absolute top-1 right-1 w-2 h-2 rounded-full ${health.status === "online" ? "bg-emerald-400 animate-pulse" : "bg-rose-400"}`} />
+          <span className={`absolute top-1 right-1 w-2 h-2 rounded-full transition-all duration-300 ${
+            health.status === "online" ? "bg-emerald-400 animate-pulse" : "bg-rose-400"
+          }`} />
         </button>
 
         <div className="flex items-center gap-2">

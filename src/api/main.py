@@ -57,28 +57,26 @@ class ApplicantPayload(BaseModel):
     hours_per_week: int = Field(..., ge=1, le=168)
     education_num: int = Field(..., ge=1, le=16)
     sex: int = Field(..., ge=0, le=1)
-    # 🟢 SPRINT 2 DEPLOYMENT UPGRADE: Safe defaults avoid front-end payload form failures
+    # Safe defaults avoid front-end payload form failures
     capital_gain: int = Field(0, ge=0)
     capital_loss: int = Field(0, ge=0)
     fairness_mode: str = Field("demographic_parity")
 
 # =====================================================================
-# INFRASTRUCTURE OBSERVABILITY HEALTH CHECK
+# INFRASTRUCTURE OBSERVABILITY HEALTH CHECK (TASK S2-01)
 # =====================================================================
 @app.get("/health", tags=["Infrastructure Monitoring"])
-def execute_system_health_audit():
+def health_check():
     """
     Automated health check mapping. Used by cloud hosting platforms (like Render)
-    to verify container availability parameters before routing public traffic.
+    and the React frontend to verify container and model asset availability parameters.
     """
     return {
         "status": "online",
-        "model_loaded": True,
-        "policy_loaded": True,
-        "assets_resolved": {
-            "model": MODEL_PATH.name,
-            "scaler": SCALER_PATH.name
-        }
+        "backend": "FastAPI",
+        "model_loaded": model is not None,
+        "policy_loaded": policy_config is not None,
+        "version": "1.0.0"
     }
 
 # =====================================================================
@@ -105,7 +103,7 @@ def process_fair_inference(payload: ApplicantPayload):
         th_male = thresholds.get("Male", 0.5)
         th_female = thresholds.get("Female", 0.5)
 
-        # 🟢 SYNCHRONIZED DEPLOYMENT INTERCEPT: Dynamic processing based on fontend mode choices
+        # SYNCHRONIZED DEPLOYMENT INTERCEPT: Dynamic processing based on frontend mode choices
         if payload.fairness_mode == "raw":
             adjustment = 0.0
         else:

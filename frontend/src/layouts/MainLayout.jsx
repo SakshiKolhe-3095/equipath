@@ -10,6 +10,8 @@ import {
   ScrollText,
   TerminalSquare,
 } from "lucide-react";
+// 🟢 Import our custom telemetry hub component
+import Topbar from "../components/Topbar.jsx";
 
 const navItems = [
   { name: "Dashboard", path: "/", icon: LayoutDashboard },
@@ -25,7 +27,7 @@ export default function MainLayout({ children }) {
   return (
     <div className="min-h-screen bg-slate-950 text-white flex">
       {/* SIDEBAR */}
-      <aside className="w-[270px] border-r border-white/5 bg-black/20 backdrop-blur-xl flex flex-col justify-between">
+      <aside className="w-[270px] border-r border-white/5 bg-black/20 backdrop-blur-xl flex flex-col justify-between shrink-0">
         <div>
           {/* LOGO */}
           <div className="p-6 border-b border-white/5">
@@ -64,7 +66,7 @@ export default function MainLayout({ children }) {
           </nav>
         </div>
 
-        {/* SYSTEM TELEMETRY */}
+        {/* SYSTEM TELEMETRY (LOWER CORNER OVERVIEW) */}
         <div className="p-4 border-t border-white/5">
           <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4">
             <div className="flex items-center justify-between mb-3">
@@ -86,8 +88,14 @@ export default function MainLayout({ children }) {
       </aside>
 
       {/* MAIN CONTENT SPACE */}
-      <main className="flex-1 overflow-auto bg-[radial-gradient(circle_at_top,#0f172a_0%,#020617_60%)]">
-        {children}
+      <main className="flex-1 overflow-auto bg-[radial-gradient(circle_at_top,#0f172a_0%,#020617_60%)] p-8">
+        {/* 🟢 TOPBAR TELEMETRY HEADER DROPPED INTO POSITION */}
+        <Topbar />
+
+        {/* Page Content Render Core */}
+        <div className="mt-2">
+          {children}
+        </div>
       </main>
     </div>
   );
