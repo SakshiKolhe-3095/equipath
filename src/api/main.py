@@ -5,7 +5,8 @@ import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-import keras
+from tensorflow.keras.models import load_model
+
 
 # =====================================================================
 # INITIALIZE FASTAPI PLATFORM WITH CORS ROUTING
@@ -29,7 +30,7 @@ app.add_middleware(
 # =====================================================================
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-MODEL_PATH = BASE_DIR / "src" / "models" / "ann_model_6features.h5"
+MODEL_PATH = BASE_DIR / "src" / "models" / "ann_model_6features.keras"
 SCALER_PATH = BASE_DIR / "src" / "models" / "scaler_6.pkl"
 POLICY_PATH = BASE_DIR / "src" / "config" / "policy.json"
 
@@ -42,12 +43,19 @@ if not SCALER_PATH.exists():
     raise RuntimeError(f"Missing scaler asset at: {SCALER_PATH}")
 if not POLICY_PATH.exists():
     raise RuntimeError(f"Missing policy config at: {POLICY_PATH}")
+print(f"Loading model from: {MODEL_PATH}")
+model = load_model(
+    str(MODEL_PATH),
+    compile=False
+)
+print("Model loaded successfully.")
 
-model = keras.saving.load_model(str(MODEL_PATH))
 scaler = joblib.load(SCALER_PATH)
+print("Scaler loaded successfully.")
 
 with open(POLICY_PATH, "r") as policy_file:
     policy_config = json.load(policy_file)
+    print("Policy configuration loaded successfully.")
 
 # =====================================================================
 # SYNCHRONIZED INPUT PAYLOAD SCHEMA
