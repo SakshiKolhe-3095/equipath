@@ -1,16 +1,12 @@
-from tensorflow.keras.models import load_model
+import tensorflow as tf
+from tensorflow import keras
 
-print("Loading model...")
-
-model = load_model(
-    "../src/models/ann_model_6features.h5",
-    compile=False
+model = keras.models.load_model(
+    "../src/models/ann_model_6features.h5"
 )
-
-print("Saving model in Keras format...")
 
 model.save(
     "../src/models/ann_model_6features.keras"
 )
 
-print("Done!")
+print("Conversion successful")

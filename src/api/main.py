@@ -1,3 +1,4 @@
+#src/api/main.py
 import json
 import joblib
 from pathlib import Path
@@ -30,7 +31,7 @@ app.add_middleware(
 # =====================================================================
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-MODEL_PATH = BASE_DIR / "src" / "models" / "ann_model_6features.keras"
+MODEL_PATH = BASE_DIR / "src" / "models" / "ann_model_deploy2.keras"
 SCALER_PATH = BASE_DIR / "src" / "models" / "scaler_6.pkl"
 POLICY_PATH = BASE_DIR / "src" / "config" / "policy.json"
 
